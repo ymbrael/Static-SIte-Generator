@@ -1,5 +1,9 @@
 import unittest
-from inline_markdown import split_nodes_delimiter
+from markdown import (
+    split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links,
+)
 from textnode import TextNode, TextType
 
 
@@ -82,6 +86,24 @@ class TestMarkdown(unittest.TestCase):
                 TextNode(" word", TextType.TEXT),
             ],
             new_nodes,
+        )
+
+    def test_extract_markdown_images(self):
+        images_l_tp = extract_markdown_images(
+            "This is an image of ![gems](https://www.boot.dev/_nuxt/gems-glow-128.Bl75yAMH.webp)"
+        )
+        self.assertListEqual([("gems", "https://www.boot.dev/_nuxt/gems-glow-128.Bl75yAMH.webp")], images_l_tp)
+
+    def test_extract_markdown_links(self):
+        links_l_tp = extract_markdown_links(
+            "This is a link to [github](https://github.com) and one to [youtube](https://www.youtube.com)"
+        )
+        self.assertListEqual(
+            [
+                ("github", "https://github.com"),
+                ("youtube", "https://www.youtube.com"),
+            ],
+            links_l_tp,
         )
 
 
