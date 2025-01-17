@@ -6,6 +6,7 @@ from markdown import (
     split_nodes_image,
     split_nodes_link,
     text_to_text_nodes,
+    markdown_to_blocks
 )
 from textnode import TextNode, TextType
 
@@ -191,6 +192,30 @@ class TestMarkdown(unittest.TestCase):
                 TextNode("link", TextType.LINK, "https://www.boot.dev/lessons/21db95df-68e9-4f10-9c76-16142abba580"),
             ],
             nodes,
+        )
+
+    def test_markdown_to_blocks(self):
+        markdown = """
+**Bold paragraph goes here.**
+
+
+
+*This paragraph has italic text*
+as well as `code` text on another line.
+
+* Down here we have a list
+* with
+* some
+* things
+"""
+        blocks = markdown_to_blocks(markdown)
+        self.assertEqual(
+            blocks,
+            [
+                "**Bold paragraph goes here.**",
+                "*This paragraph has italic text*\nas well as `code` text on another line.",
+                "* Down here we have a list\n* with\n* some\n* things"
+            ]
         )
 
 
