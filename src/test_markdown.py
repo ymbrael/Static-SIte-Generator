@@ -5,6 +5,7 @@ from markdown import (
     extract_markdown_links,
     split_nodes_image,
     split_nodes_link,
+    text_to_text_nodes,
 )
 from textnode import TextNode, TextType
 
@@ -170,6 +171,26 @@ class TestMarkdown(unittest.TestCase):
                 TextNode(" with text that follows", TextType.TEXT),
             ],
             new_nodes,
+        )
+
+    def test_text_to_text_nodes(self):
+        nodes = text_to_text_nodes(
+            "Some text with **bold**, *italic* and `code` segments as well as an ![image](https://www.boot.dev/_nuxt/xp-potion.Dn7OFh4o.webp) and a [link](https://www.boot.dev/lessons/21db95df-68e9-4f10-9c76-16142abba580)"
+        )
+        self.assertListEqual(
+            [
+                TextNode("Some text with ", TextType.TEXT),
+                TextNode("bold", TextType.BOLD),
+                TextNode(", ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("code", TextType.CODE),
+                TextNode(" segments as well as an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://www.boot.dev/_nuxt/xp-potion.Dn7OFh4o.webp"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://www.boot.dev/lessons/21db95df-68e9-4f10-9c76-16142abba580"),
+            ],
+            nodes,
         )
 
 
