@@ -5,7 +5,7 @@ from inline_markdown import (
     extract_markdown_links,
     split_nodes_image,
     split_nodes_link,
-    text_to_text_nodes,
+    text_to_textnodes,
 )
 
 from textnode import TextNode, TextType
@@ -56,8 +56,8 @@ class TestInlineMarkdown(unittest.TestCase):
         )
 
     def test_delim_italic(self):
-        node = TextNode("This is text with an *italic* word", TextType.TEXT)
-        new_nodes = split_nodes_delimiter([node], "*", TextType.ITALIC)
+        node = TextNode("This is text with an _italic_ word", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
         self.assertListEqual(
             [
                 TextNode("This is text with an ", TextType.TEXT),
@@ -68,9 +68,9 @@ class TestInlineMarkdown(unittest.TestCase):
         )
 
     def test_delim_bold_and_italic(self):
-        node = TextNode("**bold** and *italic*", TextType.TEXT)
+        node = TextNode("**bold** and _italic_", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
-        new_nodes = split_nodes_delimiter(new_nodes, "*", TextType.ITALIC)
+        new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
         self.assertListEqual(
             [
                 TextNode("bold", TextType.BOLD),
@@ -174,9 +174,9 @@ class TestInlineMarkdown(unittest.TestCase):
             new_nodes,
         )
 
-    def test_text_to_text_nodes(self):
-        nodes = text_to_text_nodes(
-            "Some text with **bold**, *italic* and `code` segments as well as an ![image](https://www.boot.dev/_nuxt/xp-potion.Dn7OFh4o.webp) and a [link](https://www.boot.dev/lessons/21db95df-68e9-4f10-9c76-16142abba580)"
+    def test_text_to_textnodes(self):
+        nodes = text_to_textnodes(
+            "Some text with **bold**, _italic_ and `code` segments as well as an ![image](https://www.boot.dev/_nuxt/xp-potion.Dn7OFh4o.webp) and a [link](https://www.boot.dev/lessons/21db95df-68e9-4f10-9c76-16142abba580)"
         )
         self.assertListEqual(
             [
