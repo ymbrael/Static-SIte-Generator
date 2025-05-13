@@ -1,18 +1,17 @@
 import unittest
 from inline_markdown import (
     split_nodes_delimiter,
-    extract_markdown_images,
-    extract_markdown_links,
     split_nodes_image,
     split_nodes_link,
     text_to_textnodes,
+    extract_markdown_links,
+    extract_markdown_images,
 )
 
 from textnode import TextNode, TextType
 
 
 class TestInlineMarkdown(unittest.TestCase):
-    #replace with my own tests later, for now these are just copied from the course
     def test_delim_bold(self):
         node = TextNode("This is text with a **bolded** word", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
@@ -71,7 +70,7 @@ class TestInlineMarkdown(unittest.TestCase):
         node = TextNode("**bold** and _italic_", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
         new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
-        self.assertListEqual(
+        self.assertEqual(
             [
                 TextNode("bold", TextType.BOLD),
                 TextNode(" and ", TextType.TEXT),
@@ -91,27 +90,25 @@ class TestInlineMarkdown(unittest.TestCase):
             ],
             new_nodes,
         )
-    
-    #These are fine for now
+
     def test_extract_markdown_images(self):
-        images_l_tp = extract_markdown_images(
-            "This is an image of ![gems](https://www.boot.dev/_nuxt/gems-glow-128.Bl75yAMH.webp)"
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
         )
-        self.assertListEqual([("gems", "https://www.boot.dev/_nuxt/gems-glow-128.Bl75yAMH.webp")], images_l_tp)
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
 
     def test_extract_markdown_links(self):
-        links_l_tp = extract_markdown_links(
-            "This is a link to [github](https://github.com) and one to [youtube](https://www.youtube.com)"
+        matches = extract_markdown_links(
+            "This is text with a [link](https://boot.dev) and [another link](https://blog.boot.dev)"
         )
         self.assertListEqual(
             [
-                ("github", "https://github.com"),
-                ("youtube", "https://www.youtube.com"),
+                ("link", "https://boot.dev"),
+                ("another link", "https://blog.boot.dev"),
             ],
-            links_l_tp,
+            matches,
         )
-    
-    #replace with my own tests later, for now these are just copied from the course
+
     def test_split_image(self):
         node = TextNode(
             "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)",
@@ -176,20 +173,20 @@ class TestInlineMarkdown(unittest.TestCase):
 
     def test_text_to_textnodes(self):
         nodes = text_to_textnodes(
-            "Some text with **bold**, _italic_ and `code` segments as well as an ![image](https://www.boot.dev/_nuxt/xp-potion.Dn7OFh4o.webp) and a [link](https://www.boot.dev/lessons/21db95df-68e9-4f10-9c76-16142abba580)"
+            "This is **text** with an _italic_ word and a `code block` and an ![image](https://i.imgur.com/zjjcJKZ.png) and a [link](https://boot.dev)"
         )
         self.assertListEqual(
             [
-                TextNode("Some text with ", TextType.TEXT),
-                TextNode("bold", TextType.BOLD),
-                TextNode(", ", TextType.TEXT),
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
                 TextNode("italic", TextType.ITALIC),
-                TextNode(" and ", TextType.TEXT),
-                TextNode("code", TextType.CODE),
-                TextNode(" segments as well as an ", TextType.TEXT),
-                TextNode("image", TextType.IMAGE, "https://www.boot.dev/_nuxt/xp-potion.Dn7OFh4o.webp"),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
                 TextNode(" and a ", TextType.TEXT),
-                TextNode("link", TextType.LINK, "https://www.boot.dev/lessons/21db95df-68e9-4f10-9c76-16142abba580"),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
             ],
             nodes,
         )

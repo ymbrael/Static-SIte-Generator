@@ -1,12 +1,8 @@
 from enum import Enum
 
 from htmlnode import ParentNode
-from inline_markdown import text_to_text_nodes
-from textnode import (
-    text_node_to_html_node, 
-    TextNode, 
-    TextType
-) 
+from inline_markdown import text_to_textnodes
+from textnode import text_node_to_html_node, TextNode, TextType
 
 
 class BlockType(Enum):
@@ -20,13 +16,14 @@ class BlockType(Enum):
 
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
-    new_blocks = []
+    filtered_blocks = []
     for block in blocks:
         if block == "":
             continue
         block = block.strip()
-        new_blocks.append(block)
-    return new_blocks
+        filtered_blocks.append(block)
+    return filtered_blocks
+
 
 def block_to_block_type(block):
     lines = block.split("\n")
@@ -82,7 +79,7 @@ def block_to_html_node(block):
 
 
 def text_to_children(text):
-    text_nodes = text_to_text_nodes(text)
+    text_nodes = text_to_textnodes(text)
     children = []
     for text_node in text_nodes:
         html_node = text_node_to_html_node(text_node)
