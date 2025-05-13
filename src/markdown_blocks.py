@@ -82,7 +82,7 @@ def block_to_html_node(block):
 
 
 def text_to_children(text):
-    text_nodes = text_to_textnodes(text)
+    text_nodes = text_to_text_nodes(text)
     children = []
     for text_node in text_nodes:
         html_node = text_node_to_html_node(text_node)
